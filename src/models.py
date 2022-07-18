@@ -1,6 +1,7 @@
 import os
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String
+import datetime
+from sqlalchemy import Column, ForeignKey, Integer, String, DateTime
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 from sqlalchemy import create_engine
@@ -8,26 +9,73 @@ from eralchemy import render_er
 
 Base = declarative_base()
 
-class Person(Base):
-    __tablename__ = 'person'
-    # Here we define columns for the table person
-    # Notice that each column is also a normal Python instance attribute.
-    id = Column(Integer, primary_key=True)
-    name = Column(String(250), nullable=False)
+class Users(Base):
+    __tablename__ = 'users'
 
-class Address(Base):
-    __tablename__ = 'address'
-    # Here we define columns for the table address.
-    # Notice that each column is also a normal Python instance attribute.
     id = Column(Integer, primary_key=True)
-    street_name = Column(String(250))
-    street_number = Column(String(250))
-    post_code = Column(String(250), nullable=False)
-    person_id = Column(Integer, ForeignKey('person.id'))
-    person = relationship(Person)
+    email = Column(String(250), nullable=False, unique=True)
+    fullname = Column(String(250), nullable=False)
+    username = Column(String(250), nullable=False, unique=True)
+    password = Column(String(250), nullable=False)
+    profile_picture = Column(String(250), default='#example')
+    posts = Column(String(250), nullable=False) 
+    followers = Column(String(250), nullable=False)
+    following = Column(String(250), nullable=False)
+    date_at = Column(DateTime, default=datetime.datetime.now())
 
     def to_dict(self):
-        return {}
+        return{}
+
+class Likes(Base):
+    __tablename__ = 'likes'
+
+    id = Column(Integer, primary_key=True)
+    post_id = Column(Integer, ForeignKey('posts.id'))
+    post = relationship('Posts', backref='Posts')
+    user_id = Column(Integer, ForeignKey('users.id'))
+    user = relationship(Users, primaryjoin=user_id == Users.id)
+
+    def to_dict(self):
+        return{}
+
+class Comments(Base):
+    __tablename__ = 'comments'
+
+    id = Column(Integer, primary_key=True)
+    post_id = Column(Integer, ForeignKey('posts.id'))
+    post = relationship('Posts', backref='Posts')
+    user_id = Column(Integer, ForeignKey('users.id'))
+    user = relationship(Users, primaryjoin=user_id == Users.id)
+    comment = Column(String(250))
+
+    def to_dict(self):
+        return{}
+
+class Posts(Base):
+    __tablename__ = 'posts'
+
+    id = Column(Integer, primary_key=True)
+    author_id = Column(String(250), nullable=False)
+    author = relationship(Users, primaryjoin=author_id == Users.id)
+    image = Column(String(250), nullable=False)
+    title = Column(String(50), nullable=False)
+    description = Column(String(250), nullable=False)
+    likes_id = Column(String(250), nullable=False)
+    likes = relationship(Likes, primaryjoin=likes_id == Likes.id)
+    comments_id = Column(String(250), nullable=False)
+    comments = relationship(Comments, primaryjoin=comments_id == Comments.id)
+    date_at = Column(DateTime, default=datetime.datetime.now())
+
+    def to_dict(self):
+        return{}
+
+
+
+
+
+
+
+
 
 ## Draw from SQLAlchemy base
 try:
