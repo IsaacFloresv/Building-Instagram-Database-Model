@@ -1,4 +1,4 @@
-# Crea el modelo de base de datos para Instagram
+p# Crea el modelo de base de datos para Instagram
 
 **Importante**: Para realizar esta actividad necesitas hacer un `fork` de este repo en tu cuenta de **Github** y luego, abrir el *fork* en Gitpod.
 
